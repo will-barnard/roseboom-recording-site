@@ -1,0 +1,201 @@
+<template>
+  <div id="roseboom-recording" @click="closeMenu">
+    <div id="header">
+      <div id="nav" class="nav-desktop">
+        <p :class="{ active: $route.name === 'featured' }" @click="$router.push({ name: 'featured' })">Featured Work</p>
+        <div class="spacer"></div>
+        <p :class="{ active: $route.name === 'video' }" @click="$router.push({ name: 'video' })">Video</p>
+        <div class="spacer"></div>
+        <p :class="{ active: $route.name === 'contact' }" @click="$router.push({ name: 'contact' })">Contact</p>
+        <div class="spacer"></div>
+        <p v-if="$store.state.token != ''" :class="{ active: $route.name === 'logout' }" @click="$router.push({ name: 'logout' })">Logout</p>
+      </div>
+      <div id="logo-container">
+        <div id="logo" @click="$router.push({ name: 'home' })">
+          <img src="/img/logo.png" alt="Logo" />
+        </div>
+      </div>
+      <div id="nav-mobile" class="nav-mobile" @click.stop>
+        <button @click="toggleMenu">☰</button>
+      </div>
+    </div>
+    <div :class="{'dropdown-menu': true, 'open': menuOpen}">
+      <p @click="$router.push({ name: 'featured' })">Featured Work</p>
+      <p @click="$router.push({ name: 'video' })">Video</p>
+      <p @click="$router.push({ name: 'contact' })">Contact</p>
+      <p v-if="$store.state.token != ''" @click="$router.push({ name: 'logout' })">Logout</p>
+    </div>
+    <div id="content">
+      <router-view />
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      menuOpen: false
+    };
+  },
+  methods: {
+    toggleMenu() {
+      this.menuOpen = !this.menuOpen;
+    },
+    closeMenu() {
+      if (this.menuOpen) {
+        this.menuOpen = false;
+      }
+    }
+  }
+};
+</script>
+
+<style>
+#roseboom-recording {
+  margin-top: 40px; /* Increased top margin */
+  text-align: center; /* Center align all text */
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Set site font */
+}
+
+#header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Align items to the center */
+  padding: 20px 20px 20px 20px; /* Adjusted padding */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  z-index: 1001;
+  box-sizing: border-box; /* Ensure it fits within the screen width */
+}
+
+#logo-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#logo {
+  cursor: pointer;
+}
+
+#logo img {
+  max-width: 80px; /* Increased size for desktop */
+  border-radius: 5px; /* Rounded edges */
+}
+
+#nav {
+  display: flex;
+  justify-content: flex-start;
+  flex: 1;
+  max-width: 40%;
+}
+
+#nav p {
+  cursor: pointer;
+  color: inherit; /* Normal text color */
+  text-decoration: none; /* No underline */
+}
+
+#nav p:hover,
+#nav p:active {
+  text-decoration: underline; /* Underline on hover and click */
+}
+
+#nav p.active {
+  text-decoration: underline; /* Underline for active page */
+}
+
+.spacer {
+  width: 20px; /* Spacer div of 20px width */
+}
+
+#nav-mobile {
+  display: none;
+  justify-content: flex-end;
+  align-items: center; /* Center align the hamburger button */
+  z-index: 1002; /* Ensure it overlays the top nav */
+}
+
+#nav-mobile button {
+  font-size: 48px; /* Increased size for hamburger button */
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 0; /* Closer to the right edge */
+}
+
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: white;
+  width: 40%;
+  height: 100%;
+  z-index: 1003; /* Ensure it overlays the hamburger button */
+  padding: 20px;
+  overflow-y: auto; /* Allow scrolling if content overflows */
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.dropdown-menu.open {
+  transform: translateX(0);
+}
+
+.dropdown-menu p {
+  cursor: pointer;
+  color: inherit; /* Normal text color */
+  text-decoration: none; /* No underline */
+}
+
+.dropdown-menu p:hover,
+.dropdown-menu p:active {
+  text-decoration: underline; /* Underline on hover and click */
+}
+
+#content {
+  margin-top: 160px; /* Added more margin to account for fixed header */
+}
+
+@media (min-width: 769px) {
+  #header {
+    padding-top: 80px; /* Move top area down even more on desktop */
+  }
+}
+
+@media (max-width: 768px) {
+  #logo-container {
+    justify-content: flex-start;
+    position: static;
+    transform: none;
+  }
+  #logo {
+    margin: 5px 0 0 10px; /* Less top margin and closer to the left */
+  }
+  #logo img {
+    max-width: 60px; /* Increased size for mobile */
+  }
+  #nav {
+    display: none;
+  }
+  #nav-mobile {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center; /* Center align the hamburger button */
+    margin-right: 0; /* Closer to the right edge */
+  }
+}
+
+img {
+  border-radius: 5px; /* Rounded edges for all images */
+}
+</style>
