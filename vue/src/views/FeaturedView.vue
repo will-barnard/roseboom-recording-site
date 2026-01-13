@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import FeaturedWork from '../assets/FeaturedWork.js';
 import FeaturedCard from '../components/FeaturedCard.vue';
+import ApiService from '../services/ApiService';
 
 export default {
   name: 'FeaturedView',
@@ -17,8 +17,28 @@ export default {
   },
   data() {
     return {
-      featuredWorks: FeaturedWork.featuredWork
+      featuredWorks: []
     };
+  },
+  created() {
+    this.loadProjects();
+  },
+  methods: {
+    async loadProjects() {
+      try {
+        const response = await ApiService.getProjects();
+        const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace('/api', '');
+        this.featuredWorks = response.data.map(project => ({
+          ...project,
+          // Map backend image paths to work with Vue app
+          image: project.image && project.image.startsWith('/uploads/') 
+            ? `${baseUrl}${project.image}`
+            : project.image
+        }));
+      } catch (error) {
+        console.error('Failed to load projects:', error);
+      }
+    }
   }
 };
 </script>

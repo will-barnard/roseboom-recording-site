@@ -3,13 +3,13 @@ import { useStore } from 'vuex'
 
 // Import components
 import HomeView from '../views/HomeView.vue';
-import LoginView from '../views/LoginView.vue';
 import LogoutView from '../views/LogoutView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import FeaturedView from '../views/FeaturedView.vue';
 import VideoView from '../views/VideoView.vue';
 import ContactView from '../views/ContactView.vue';
-import FeaturedDetailView from '../views/FeaturedDetailView.vue';
+import AdminLoginView from '../views/AdminLoginView.vue';
+import AdminDashboardView from '../views/AdminDashboardView.vue';
 
 /**
  * The Vue Router is used to "direct" the browser to render a specific view component
@@ -25,14 +25,6 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView,
-    meta: {
-      requiresAuth: false
-    }
-  },
-  {
-    path: "/login",
-    name: "login",
-    component: LoginView,
     meta: {
       requiresAuth: false
     }
@@ -77,12 +69,21 @@ const routes = [
       requiresAuth: false
     }
   },
+  // Admin routes (not publicly linked)
   {
-    path: "/featured/:id",
-    name: "featured-detail",
-    component: FeaturedDetailView,
+    path: "/secret-admin-login",
+    name: "admin-login",
+    component: AdminLoginView,
     meta: {
       requiresAuth: false
+    }
+  },
+  {
+    path: "/admin/dashboard",
+    name: "admin-dashboard",
+    component: AdminDashboardView,
+    meta: {
+      requiresAuth: true
     }
   }
 ];
@@ -101,9 +102,9 @@ router.beforeEach((to) => {
   // Determine if the route requires Authentication
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
 
-  // If it does and they are not logged in, send the user to "/login"
+  // If it does and they are not logged in, send the user to admin login
   if (requiresAuth && store.state.token === '') {
-    return {name: "login"};
+    return {name: "admin-login"};
   }
   // Otherwise, do nothing and they'll go to their next destination
 });
