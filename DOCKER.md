@@ -48,7 +48,7 @@ Edit `backend/.env` and set a secure JWT_SECRET:
 ```env
 JWT_SECRET=your-very-secure-random-string-here
 PORT=3000
-JWT_EXPIRES_IN=7d
+JWT_EXPIRES_IN=2y
 NODE_ENV=production
 ```
 
