@@ -35,11 +35,25 @@ echo ""
 
 # Build and start containers
 echo "🔨 Building and starting containers..."
+
+# Create data directory for database
+mkdir -p data
+
 docker-compose build --no-cache
 echo ""
 
 echo "🚀 Starting containers..."
 docker-compose up -d
+echo ""
+
+# Wait for containers to be ready
+echo "⏳ Waiting for containers to be ready..."
+sleep 3
+echo ""
+
+# Initialize database
+echo "📊 Initializing database..."
+docker-compose exec -T backend npm run init-db
 echo ""
 
 # Show container status
