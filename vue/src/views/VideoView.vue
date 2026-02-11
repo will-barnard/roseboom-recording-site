@@ -45,7 +45,7 @@ export default {
       // Convert YouTube URLs to embed format
       if (url.includes('youtube.com') || url.includes('youtu.be')) {
         const videoId = this.extractYoutubeId(url);
-        return `https://www.youtube.com/embed/${videoId}`;
+        return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`;
       }
       // Convert Vimeo URLs to embed format
       if (url.includes('vimeo.com')) {

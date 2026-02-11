@@ -7,8 +7,12 @@
         <p :class="{ active: $route.name === 'video' }" @click="$router.push({ name: 'video' })">Video</p>
         <div class="spacer"></div>
         <p :class="{ active: $route.name === 'contact' }" @click="$router.push({ name: 'contact' })">Contact</p>
-        <div class="spacer"></div>
-        <p v-if="$store.state.token != ''" :class="{ active: $route.name === 'logout' }" @click="$router.push({ name: 'logout' })">Logout</p>
+        <template v-if="$store.state.token != ''">
+          <div class="spacer"></div>
+          <p :class="{ active: $route.name === 'admin-dashboard' }" @click="$router.push({ name: 'admin-dashboard' })">Admin</p>
+          <div class="spacer"></div>
+          <p :class="{ active: $route.name === 'logout' }" @click="$router.push({ name: 'logout' })">Logout</p>
+        </template>
       </div>
       <div id="logo-container">
         <div id="logo" @click="$router.push({ name: 'home' })">
@@ -23,7 +27,10 @@
       <p @click="$router.push({ name: 'featured' })">Featured Work</p>
       <p @click="$router.push({ name: 'video' })">Video</p>
       <p @click="$router.push({ name: 'contact' })">Contact</p>
-      <p v-if="$store.state.token != ''" @click="$router.push({ name: 'logout' })">Logout</p>
+      <template v-if="$store.state.token != ''">
+        <p @click="$router.push({ name: 'admin-dashboard' })">Admin</p>
+        <p @click="$router.push({ name: 'logout' })">Logout</p>
+      </template>
     </div>
     <div id="content">
       <router-view />
