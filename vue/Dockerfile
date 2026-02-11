@@ -17,5 +17,5 @@ RUN npm run build
 # Expose port
 EXPOSE 5173
 
-# Start the development server (for dev) or serve the build (for prod)
-CMD ["npm", "run", "preview"]
+# Start the preview server with correct host binding
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]
