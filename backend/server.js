@@ -2,9 +2,17 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const fs = require('fs');
 
-// Load environment variables
-dotenv.config();
+// Load environment variables from .env file if it exists
+// In production, environment variables may be set directly by Docker
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  dotenv.config({ path: envPath });
+} else {
+  // Silent: use environment variables from Docker/system
+  console.log('No .env file found, using environment variables');
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
