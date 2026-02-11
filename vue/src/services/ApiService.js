@@ -75,5 +75,13 @@ export default {
   },
   reorderVideos(videoIds) {
     return apiClient.post('/videos/reorder', { videoIds });
+  },
+
+  // Content
+  getHomeContent() {
+    return apiClient.get('/content/home');
+  },
+  updateHomeContent(content) {
+    return apiClient.put('/content/home', { content });
   }
 };

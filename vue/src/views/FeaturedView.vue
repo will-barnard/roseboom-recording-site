@@ -23,6 +23,45 @@ export default {
   created() {
     this.loadProjects();
   },
+  mounted() {
+    // Remove side padding but preserve top margin for fixed header
+    const contentDiv = document.getElementById('content');
+    const roseboomDiv = document.getElementById('roseboom-recording');
+    const body = document.body;
+    if (contentDiv) {
+      contentDiv.style.paddingLeft = '0';
+      contentDiv.style.paddingRight = '0';
+      contentDiv.style.paddingBottom = '0';
+      // Keep margin-top intact for fixed header
+    }
+    if (roseboomDiv) {
+      roseboomDiv.style.paddingLeft = '0';
+      roseboomDiv.style.paddingRight = '0';
+    }
+    if (body) {
+      body.style.margin = '0';
+      body.style.padding = '0';
+    }
+  },
+  beforeUnmount() {
+    // Restore padding when leaving
+    const contentDiv = document.getElementById('content');
+    const roseboomDiv = document.getElementById('roseboom-recording');
+    const body = document.body;
+    if (contentDiv) {
+      contentDiv.style.paddingLeft = '';
+      contentDiv.style.paddingRight = '';
+      contentDiv.style.paddingBottom = '';
+    }
+    if (roseboomDiv) {
+      roseboomDiv.style.paddingLeft = '';
+      roseboomDiv.style.paddingRight = '';
+    }
+    if (body) {
+      body.style.margin = '';
+      body.style.padding = '';
+    }
+  },
   methods: {
     async loadProjects() {
       try {
@@ -45,14 +84,20 @@ export default {
 
 <style scoped>
 .featured {
-  text-align: center; /* Center align all text */
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 .featured-cards {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px; /* Add space between cards */
+  justify-content: flex-start;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 .featured-cards > * {
@@ -63,15 +108,26 @@ export default {
 
 @media (min-width: 769px) {
   .featured-cards > * {
-    flex: 1 1 calc(33.333% - 20px); /* 3 cards per row */
-    max-width: calc(33.333% - 20px); /* Ensure cards are the same size */
+    flex: 1 1 calc(33.333%); /* 3 cards per row */
+    max-width: calc(33.333%); /* Ensure cards are the same size */
   }
 }
 
 @media (min-width: 1024px) {
   .featured-cards > * {
-    flex: 1 1 calc(25% - 20px); /* 4 cards per row */
-    max-width: calc(25% - 20px); /* Ensure cards are the same size */
+    flex: 1 1 calc(25%); /* 4 cards per row */
+    max-width: calc(25%); /* Ensure cards are the same size */
+  }
+}
+
+@media (max-width: 768px) {
+  .featured {
+    margin: 0;
+    padding: 0;
+    padding-top: 0 !important;
+  }
+  .featured-cards {
+    padding-top: 0;
   }
 }
 </style>

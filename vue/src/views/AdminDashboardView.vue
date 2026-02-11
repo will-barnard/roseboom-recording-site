@@ -7,6 +7,13 @@
 
     <div class="dashboard-nav">
       <button 
+        @click="activeTab = 'home'" 
+        :class="{ active: activeTab === 'home' }"
+        class="tab-btn"
+      >
+        Home Content
+      </button>
+      <button 
         @click="activeTab = 'projects'" 
         :class="{ active: activeTab === 'projects' }"
         class="tab-btn"
@@ -30,6 +37,7 @@
     </div>
 
     <div class="dashboard-content">
+      <AdminHomeContent v-if="activeTab === 'home'" />
       <AdminProjects v-if="activeTab === 'projects'" />
       <AdminVideos v-if="activeTab === 'videos'" />
       <AdminChangePassword v-if="activeTab === 'password'" />
@@ -38,6 +46,7 @@
 </template>
 
 <script>
+import AdminHomeContent from '../components/AdminHomeContent.vue';
 import AdminProjects from '../components/AdminProjects.vue';
 import AdminVideos from '../components/AdminVideos.vue';
 import AdminChangePassword from '../components/AdminChangePassword.vue';
@@ -45,13 +54,14 @@ import AdminChangePassword from '../components/AdminChangePassword.vue';
 export default {
   name: 'AdminDashboardView',
   components: {
+    AdminHomeContent,
     AdminProjects,
     AdminVideos,
     AdminChangePassword
   },
   data() {
     return {
-      activeTab: 'projects'
+      activeTab: 'home'
     };
   },
   methods: {

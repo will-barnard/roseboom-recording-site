@@ -207,10 +207,10 @@ export default {
     margin: 0;
   }
   #logo {
-    margin: 5px 0 0 10px; /* Less top margin and closer to the left */
+    margin: 0 0 0 10px;
   }
   #logo img {
-    max-width: 90px; /* Increased size for mobile */
+    max-width: 60px;
   }
   #nav-left,
   #nav-right {
@@ -219,12 +219,19 @@ export default {
   #nav-mobile {
     display: flex;
     justify-content: flex-end;
-    align-items: center; /* Center align the hamburger button */
-    margin-right: 0; /* Closer to the right edge */
+    align-items: center;
+    margin-right: 0;
     margin-left: auto;
+  }
+  #nav-mobile button {
+    font-size: 36px;
   }
   #header {
     justify-content: space-between;
+    padding: 10px 15px;
+  }
+  #content {
+    margin-top: 90px;
   }
 }
 

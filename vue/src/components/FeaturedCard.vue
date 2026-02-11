@@ -40,9 +40,13 @@ export default {
 <style scoped>
 .featured-card {
   text-align: center;
-  margin: 20px;
+  margin: 0;
+  padding: 0;
   cursor: pointer;
   transition: transform 0.2s;
+  position: relative;
+  border: none;
+  display: block;
 }
 
 .featured-card:hover {
@@ -51,23 +55,35 @@ export default {
 
 .image-container {
   position: relative;
+  margin: 0;
+  padding: 0;
+  display: block;
 }
 
 .featured-card img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 5px;
+  border-radius: 0;
   transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+  display: block;
+  margin: 0;
+  padding: 0;
 }
 
 .info-panel {
-  background: #f8f9fa;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.98);
   padding: 20px;
-  margin-top: 15px;
-  border-radius: 5px;
+  border-radius: 0;
   text-align: left;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 10;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .info-panel h3 {
@@ -138,7 +154,7 @@ export default {
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 0;
     opacity: 0;
     transition: opacity 0.8s ease-in-out, transform 0.3s ease-in-out;
     width: 100%;
