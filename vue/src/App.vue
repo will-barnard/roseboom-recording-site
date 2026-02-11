@@ -1,23 +1,24 @@
 <template>
   <div id="roseboom-recording" @click="closeMenu">
     <div id="header">
-      <div id="nav" class="nav-desktop">
+      <div id="nav-left" class="nav-desktop">
         <p :class="{ active: $route.name === 'featured' }" @click="$router.push({ name: 'featured' })">Featured Work</p>
-        <div class="spacer"></div>
-        <p :class="{ active: $route.name === 'video' }" @click="$router.push({ name: 'video' })">Video</p>
-        <div class="spacer"></div>
-        <p :class="{ active: $route.name === 'contact' }" @click="$router.push({ name: 'contact' })">Contact</p>
-        <template v-if="$store.state.token != ''">
-          <div class="spacer"></div>
-          <p :class="{ active: $route.name === 'admin-dashboard' }" @click="$router.push({ name: 'admin-dashboard' })">Admin</p>
-          <div class="spacer"></div>
-          <p :class="{ active: $route.name === 'logout' }" @click="$router.push({ name: 'logout' })">Logout</p>
-        </template>
       </div>
       <div id="logo-container">
         <div id="logo" @click="$router.push({ name: 'home' })">
           <img src="/img/logo.png" alt="Logo" />
         </div>
+      </div>
+      <div id="nav-right" class="nav-desktop">
+        <p :class="{ active: $route.name === 'video' }" @click="$router.push({ name: 'video' })">Video</p>
+        <div class="spacer"></div>
+        <p :class="{ active: $route.name === 'contact' }" @click="$router.push({ name: 'contact' })">Contact</p>
+        <div class="flex-spacer"></div>
+        <template v-if="$store.state.token != ''">
+          <p :class="{ active: $route.name === 'admin-dashboard' }" @click="$router.push({ name: 'admin-dashboard' })">Admin</p>
+          <div class="spacer"></div>
+          <p :class="{ active: $route.name === 'logout' }" @click="$router.push({ name: 'logout' })">Logout</p>
+        </template>
       </div>
       <div id="nav-mobile" class="nav-mobile" @click.stop>
         <button @click="toggleMenu">☰</button>
@@ -68,24 +69,23 @@ export default {
 #header {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Align items to the center */
-  padding: 20px 20px 20px 20px; /* Adjusted padding */
+  align-items: center;
+  padding: 20px 20px 20px 20px;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   background-color: white;
   z-index: 1001;
-  box-sizing: border-box; /* Ensure it fits within the screen width */
+  box-sizing: border-box;
 }
 
 #logo-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
 }
 
 #logo {
@@ -93,34 +93,51 @@ export default {
 }
 
 #logo img {
-  max-width: 80px; /* Increased size for desktop */
-  border-radius: 5px; /* Rounded edges */
+  max-width: 120px;
+  border-radius: 5px;
 }
 
-#nav {
+#nav-left {
   display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+  padding-right: 60px;
+}
+
+#nav-right {
+  display: flex;
+  align-items: center;
   justify-content: flex-start;
   flex: 1;
-  max-width: 40%;
+  padding-left: 60px;
 }
 
-#nav p {
+#nav-left p,
+#nav-right p {
   cursor: pointer;
   color: inherit; /* Normal text color */
   text-decoration: none; /* No underline */
 }
 
-#nav p:hover,
-#nav p:active {
+#nav-left p:hover,
+#nav-left p:active,
+#nav-right p:hover,
+#nav-right p:active {
   text-decoration: underline; /* Underline on hover and click */
 }
 
-#nav p.active {
+#nav-left p.active,
+#nav-right p.active {
   text-decoration: underline; /* Underline for active page */
 }
 
 .spacer {
   width: 20px; /* Spacer div of 20px width */
+}
+
+.flex-spacer {
+  flex-grow: 1; /* Grows to fill available space */
 }
 
 #nav-mobile {
@@ -170,12 +187,15 @@ export default {
 }
 
 #content {
-  margin-top: 160px; /* Added more margin to account for fixed header */
+  margin-top: 200px; /* Added more margin to account for fixed header with larger logo */
 }
 
 @media (min-width: 769px) {
   #header {
     padding-top: 80px; /* Move top area down even more on desktop */
+  }
+  #content {
+    margin-top: 240px; /* Extra margin on desktop for larger header */
   }
 }
 
@@ -184,14 +204,16 @@ export default {
     justify-content: flex-start;
     position: static;
     transform: none;
+    margin: 0;
   }
   #logo {
     margin: 5px 0 0 10px; /* Less top margin and closer to the left */
   }
   #logo img {
-    max-width: 60px; /* Increased size for mobile */
+    max-width: 90px; /* Increased size for mobile */
   }
-  #nav {
+  #nav-left,
+  #nav-right {
     display: none;
   }
   #nav-mobile {
@@ -199,6 +221,10 @@ export default {
     justify-content: flex-end;
     align-items: center; /* Center align the hamburger button */
     margin-right: 0; /* Closer to the right edge */
+    margin-left: auto;
+  }
+  #header {
+    justify-content: space-between;
   }
 }
 
