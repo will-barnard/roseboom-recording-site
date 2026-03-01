@@ -189,7 +189,7 @@ const seedData = async () => {
   }
 };
 
-// Initialize database
+// Initialize database (closes connection after)
 const initDatabase = async () => {
   try {
     await createTables();
@@ -202,9 +202,21 @@ const initDatabase = async () => {
   }
 };
 
+// Initialize database without closing connection (for server startup)
+const initDatabaseNoClose = async () => {
+  try {
+    await createTables();
+    await seedData();
+    console.log('Database initialized successfully');
+  } catch (error) {
+    console.error('Error initializing database:', error);
+    throw error;
+  }
+};
+
 // Run if called directly
 if (require.main === module) {
   initDatabase();
 }
 
-module.exports = { initDatabase };
+module.exports = { initDatabase, initDatabaseNoClose };

@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middleware/auth');
-const db = require('../database/db');
+const { dbGet, dbRun } = require('../database/helpers');
 
 // Get home page content
-router.get('/home', (req, res) => {
+router.get('/home', async (req, res) => {
   try {
-    const content = db.prepare('SELECT * FROM content WHERE key = ?').get('home_content');
+    const content = await dbGet('SELECT * FROM content WHERE key = ?', ['home_content']);
     
     if (!content) {
       return res.json({ content: '' });
@@ -20,7 +20,7 @@ router.get('/home', (req, res) => {
 });
 
 // Update home page content (requires authentication)
-router.put('/home', authenticate, (req, res) => {
+router.put('/home', authenticate, async (req, res) => {
   try {
     const { content } = req.body;
     
@@ -29,16 +29,16 @@ router.put('/home', authenticate, (req, res) => {
     }
     
     // Check if content exists
-    const existing = db.prepare('SELECT * FROM content WHERE key = ?').get('home_content');
+    const existing = await dbGet('SELECT * FROM content WHERE key = ?', ['home_content']);
     
     if (existing) {
       // Update existing content
-      db.prepare('UPDATE content SET value = ?, updated_at = CURRENT_TIMESTAMP WHERE key = ?')
-        .run(content, 'home_content');
+      await dbRun('UPDATE content SET value = ?, updated_at = CURRENT_TIMESTAMP WHERE key = ?',
+        [content, 'home_content']);
     } else {
       // Insert new content
-      db.prepare('INSERT INTO content (key, value) VALUES (?, ?)')
-        .run('home_content', content);
+      await dbRun('INSERT INTO content (key, value) VALUES (?, ?)',
+        ['home_content', content]);
     }
     
     res.json({ message: 'Content updated successfully', content });

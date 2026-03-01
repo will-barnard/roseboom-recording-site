@@ -60,22 +60,30 @@ export default {
 </script>
 
 <style>
+body {
+  background-color: #e7e2de;
+  margin: 0;
+  padding: 0;
+}
+
 #roseboom-recording {
   margin-top: 40px; /* Increased top margin */
   text-align: center; /* Center align all text */
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Set site font */
+  background-color: #e7e2de;
+  min-height: 100vh;
 }
 
 #header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 20px 20px 20px;
+  padding: 20px 20px 40px 20px;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background-color: white;
+  background-color: #e7e2de;
   z-index: 1001;
   box-sizing: border-box;
 }
@@ -161,7 +169,7 @@ export default {
   position: fixed;
   top: 0;
   right: 0;
-  background-color: white;
+  background-color: #e7e2de;
   width: 40%;
   height: 100%;
   z-index: 1003; /* Ensure it overlays the hamburger button */

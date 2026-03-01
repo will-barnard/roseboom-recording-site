@@ -137,7 +137,7 @@ export default {
         if (this.editingProject) {
           await ApiService.updateProject(this.editingProject.id, formData);
         } else {
-          formData.append('display_order', this.projects.length);
+          formData.append('display_order', 0);
           await ApiService.createProject(formData);
         }
 

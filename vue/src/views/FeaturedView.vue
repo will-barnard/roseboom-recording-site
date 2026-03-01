@@ -1,7 +1,13 @@
 <template>
-  <div class="featured">
+  <div class="featured" :class="{ 'loaded': isLoaded }">
     <div class="featured-cards">
-      <FeaturedCard v-for="featuredWork in featuredWorks" :key="featuredWork.id" :featuredWork="featuredWork" />
+      <FeaturedCard 
+        v-for="featuredWork in featuredWorks" 
+        :key="featuredWork.id" 
+        :featuredWork="featuredWork" 
+        :isExpanded="expandedCardId === featuredWork.id"
+        @toggle="handleToggle"
+      />
     </div>
   </div>
 </template>
@@ -17,13 +23,20 @@ export default {
   },
   data() {
     return {
-      featuredWorks: []
+      featuredWorks: [],
+      expandedCardId: null,
+      isLoaded: false
     };
   },
   created() {
     this.loadProjects();
   },
   mounted() {
+    // Trigger fade-in animation
+    setTimeout(() => {
+      this.isLoaded = true;
+    }, 50);
+    
     // Remove side padding but preserve top margin for fixed header
     const contentDiv = document.getElementById('content');
     const roseboomDiv = document.getElementById('roseboom-recording');
@@ -63,6 +76,13 @@ export default {
     }
   },
   methods: {
+    handleToggle(cardId) {
+      if (this.expandedCardId === cardId) {
+        this.expandedCardId = null;
+      } else {
+        this.expandedCardId = cardId;
+      }
+    },
     async loadProjects() {
       try {
         const response = await ApiService.getProjects();
@@ -88,6 +108,12 @@ export default {
   padding: 0;
   margin: 0;
   width: 100%;
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
+}
+
+.featured.loaded {
+  opacity: 1;
 }
 
 .featured-cards {

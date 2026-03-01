@@ -86,6 +86,7 @@ export default {
 
 .editor-container {
   max-width: 800px;
+  margin: 0 auto;
 }
 
 label {

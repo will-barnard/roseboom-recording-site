@@ -1,11 +1,7 @@
 <template>
-  <div class="home">
-    <img src="/img/homepage_photo.jpeg" class="responsive-img" />
-    <p v-html="homeContent"></p>
-    <div class="bottom-images">
-      <img src="/img/remjag.jpg" class="responsive" />
-      <img src="/img/goddesspainting.jpg" class="responsive" />
-    </div>
+  <div class="home" :class="{ 'loaded': isLoaded }">
+    <img src="/img/homepage_photo.jpeg" class="responsive-img fade-in" />
+    <p v-html="homeContent" class="content-text fade-in-delay"></p>
   </div>
 </template>
 
@@ -16,11 +12,18 @@ export default {
   name: 'HomeView',
   data() {
     return {
-      homeContent: 'Hi, thanks for dropping by! Roseboom Recording is the name I have given to my home studio in Chicago.<br><br>We have an amazing community of creatives helping run the show over here, including but not limited to: studio musicians, composers, photographers, videographers, producers, visual artists, film directors, etc. Remi the cat also lives in the studio as a heads up - she rocks.<br><br>The studio is semi-portable / remote recording is an option if you\'d like to book a location away from the city for a few days.<br><br>Please send project inquiries to nathan@roseboomrecording.com'
+      homeContent: '',
+      isLoaded: false
     };
   },
   async created() {
     await this.loadHomeContent();
+  },
+  mounted() {
+    // Trigger fade-in animation after component is mounted
+    setTimeout(() => {
+      this.isLoaded = true;
+    }, 50);
   },
   methods: {
     async loadHomeContent() {
@@ -43,10 +46,32 @@ export default {
   text-align: center; /* Center align all text */
 }
 
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in-delay {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
+}
+
+.home.loaded .fade-in,
+.home.loaded .fade-in-delay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .responsive-img {
   width: 100%;
   height: auto;
   border-radius: 5px; /* Rounded edges */
+}
+
+.content-text {
+  line-height: 1.6;
 }
 
 .bottom-images {

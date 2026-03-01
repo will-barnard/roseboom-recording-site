@@ -1,3 +1,5 @@
 java/
 roseboom-recording-site.code-workspace
 .env
+data/
+backend/data/

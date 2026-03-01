@@ -5,12 +5,11 @@
       <h4 class="desktop-title">{{ featuredWork.title }}</h4>
     </div>
     <transition name="slide-fade">
-      <div v-if="expanded" class="info-panel">
+      <div v-if="isExpanded" class="info-panel">
         <h3>{{ featuredWork.title }}</h3>
         <p class="description">{{ featuredWork.description }}</p>
         <p class="role"><strong>Role:</strong> {{ featuredWork.role }}</p>
         <p class="year"><strong>Year:</strong> {{ featuredWork.year }}</p>
-        <a v-if="featuredWork.url" :href="featuredWork.url" target="_blank" @click.stop>View Project</a>
       </div>
     </transition>
   </div>
@@ -22,16 +21,15 @@ export default {
     featuredWork: {
       type: Object,
       required: true
+    },
+    isExpanded: {
+      type: Boolean,
+      default: false
     }
-  },
-  data() {
-    return {
-      expanded: false
-    };
   },
   methods: {
     toggleExpand() {
-      this.expanded = !this.expanded;
+      this.$emit('toggle', this.featuredWork.id);
     }
   }
 };
@@ -43,14 +41,14 @@ export default {
   margin: 0;
   padding: 0;
   cursor: pointer;
-  transition: transform 0.2s;
   position: relative;
   border: none;
   display: block;
+  z-index: 1;
 }
 
 .featured-card:hover {
-  transform: translateY(-5px);
+  z-index: 100;
 }
 
 .image-container {
@@ -168,7 +166,6 @@ export default {
   }
 
   .image-container:hover img {
-    transform: scale(1.05);
     filter: brightness(0.7);
   }
 }

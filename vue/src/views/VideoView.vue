@@ -1,11 +1,11 @@
 <template>
-  <div class="video">
-    <h1>Video</h1>
-    <div v-if="videos.length === 0" class="no-videos">
+  <div class="video" :class="{ 'loaded': isLoaded }">
+    <h1 class="fade-in">Video</h1>
+    <div v-if="videos.length === 0" class="no-videos fade-in-delay">
       <p>No videos available yet.</p>
     </div>
     <div v-else class="video-list">
-      <div v-for="video in videos" :key="video.id" class="video-item">
+      <div v-for="(video, index) in videos" :key="video.id" class="video-item fade-in" :style="{transitionDelay: `${index * 0.1}s`}">
         <iframe 
           :src="getEmbedUrl(video.url)" 
           :title="video.title || 'Video'"
@@ -26,11 +26,17 @@ export default {
   name: 'VideoView',
   data() {
     return {
-      videos: []
+      videos: [],
+      isLoaded: false
     };
   },
   created() {
     this.loadVideos();
+  },
+  mounted() {
+    setTimeout(() => {
+      this.isLoaded = true;
+    }, 50);
   },
   methods: {
     async loadVideos() {
@@ -64,6 +70,24 @@ export default {
 </script>
 
 <style scoped>
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in-delay {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
+}
+
+.video.loaded .fade-in,
+.video.loaded .fade-in-delay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .video {
   text-align: center;
   padding: 20px;
