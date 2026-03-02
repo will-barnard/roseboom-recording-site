@@ -1,17 +1,17 @@
 <template>
-  <div class="featured-card" @click="toggleExpand">
+  <div class="featured-card" @click="handleClick" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
     <div class="image-container">
       <img :src="featuredWork.image" alt="Featured Image" />
-      <h4 class="desktop-title">{{ featuredWork.title }}</h4>
+      <div v-if="showOverlay" class="image-overlay"></div>
+      <transition name="slide-fade">
+        <div v-if="showInfo" class="info-panel">
+          <h3>{{ featuredWork.title }}</h3>
+          <p v-if="featuredWork.description" class="description">{{ featuredWork.description }}</p>
+          <p v-if="featuredWork.role" class="role"><strong>Role:</strong> {{ featuredWork.role }}</p>
+          <p v-if="featuredWork.year" class="year"><strong>Year:</strong> {{ featuredWork.year }}</p>
+        </div>
+      </transition>
     </div>
-    <transition name="slide-fade">
-      <div v-if="isExpanded" class="info-panel">
-        <h3>{{ featuredWork.title }}</h3>
-        <p class="description">{{ featuredWork.description }}</p>
-        <p class="role"><strong>Role:</strong> {{ featuredWork.role }}</p>
-        <p class="year"><strong>Year:</strong> {{ featuredWork.year }}</p>
-      </div>
-    </transition>
   </div>
 </template>
 
@@ -27,9 +27,49 @@ export default {
       default: false
     }
   },
+  data() {
+    return {
+      isHovering: false,
+      isMobile: false
+    };
+  },
+  computed: {
+    showInfo() {
+      if (this.isMobile) {
+        return this.isExpanded;
+      } else {
+        return this.isHovering;
+      }
+    },
+    showOverlay() {
+      return this.showInfo;
+    }
+  },
+  mounted() {
+    this.checkIfMobile();
+    window.addEventListener('resize', this.checkIfMobile);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.checkIfMobile);
+  },
   methods: {
-    toggleExpand() {
-      this.$emit('toggle', this.featuredWork.id);
+    checkIfMobile() {
+      this.isMobile = window.innerWidth <= 768;
+    },
+    handleClick() {
+      if (this.isMobile) {
+        this.$emit('toggle', this.featuredWork.id);
+      }
+    },
+    handleMouseEnter() {
+      if (!this.isMobile) {
+        this.isHovering = true;
+      }
+    },
+    handleMouseLeave() {
+      if (!this.isMobile) {
+        this.isHovering = false;
+      }
     }
   }
 };
@@ -40,7 +80,6 @@ export default {
   text-align: center;
   margin: 0;
   padding: 0;
-  cursor: pointer;
   position: relative;
   border: none;
   display: block;
@@ -63,69 +102,74 @@ export default {
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 0;
-  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
   display: block;
   margin: 0;
   padding: 0;
 }
 
-.info-panel {
+.image-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.98);
-  padding: 20px;
-  border-radius: 0;
-  text-align: left;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.info-panel {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  right: 5%;
+  transform: translateY(-50%);
+  padding: 12px 18px;
+  text-align: center;
   z-index: 10;
-  max-height: 100%;
+  max-height: 90%;
   overflow-y: auto;
+  color: white;
+  box-sizing: border-box;
 }
 
 .info-panel h3 {
-  margin: 0 0 15px 0;
-  color: #2c3e50;
+  margin: 0 0 10px 0;
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.3;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
 }
 
 .info-panel .description {
-  margin: 10px 0;
-  line-height: 1.6;
-  color: #555;
+  margin: 8px 0;
+  line-height: 1.5;
+  color: #f0f0f0;
+  font-size: 0.95rem;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .info-panel .role,
 .info-panel .year {
-  margin: 8px 0;
-  color: #666;
-}
-
-.info-panel a {
-  display: inline-block;
-  margin-top: 15px;
-  padding: 8px 16px;
-  background-color: #4a90e2;
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-}
-
-.info-panel a:hover {
-  background-color: #357abd;
+  margin: 5px 0;
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .slide-fade-enter-active {
-  transition: all 0.3s ease;
+  transition: opacity 0.5s ease;
 }
 
 .slide-fade-leave-active {
-  transition: all 0.2s ease;
+  transition: opacity 0.4s ease;
 }
 
 .slide-fade-enter-from {
-  transform: translateY(-10px);
   opacity: 0;
 }
 
@@ -134,39 +178,20 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .featured-card img {
-    max-width: 100%;
+  .featured-card {
+    cursor: pointer;
   }
-  .desktop-title {
-    display: none;
+  
+  .info-panel {
+    max-width: 90%;
+    max-height: 90%;
+    padding: 15px;
   }
 }
 
 @media (min-width: 769px) {
-  .desktop-title {
-    display: none;
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 0;
-    opacity: 0;
-    transition: opacity 0.8s ease-in-out, transform 0.3s ease-in-out;
-    width: 100%;
-    text-align: center;
-    box-sizing: border-box;
-  }
-
-  .image-container:hover .desktop-title {
-    display: block;
-    opacity: 1;
-  }
-
-  .image-container:hover img {
-    filter: brightness(0.7);
+  .featured-card {
+    cursor: default;
   }
 }
 </style>
