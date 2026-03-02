@@ -1,5 +1,5 @@
 <template>
-  <div class="featured-card" @click="handleClick" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
+  <div class="featured-card" :class="{ 'card-visible': isVisible }" @click="handleClick" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
     <div class="image-container">
       <img :src="featuredWork.image" alt="Featured Image" />
       <div v-if="showOverlay" class="image-overlay"></div>
@@ -23,6 +23,14 @@ export default {
       required: true
     },
     isExpanded: {
+      type: Boolean,
+      default: false
+    },
+    index: {
+      type: Number,
+      default: 0
+    },
+    isVisible: {
       type: Boolean,
       default: false
     }
@@ -84,6 +92,12 @@ export default {
   border: none;
   display: block;
   z-index: 1;
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
+}
+
+.featured-card.card-visible {
+  opacity: 1;
 }
 
 .featured-card:hover {

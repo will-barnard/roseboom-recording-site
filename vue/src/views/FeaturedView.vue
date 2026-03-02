@@ -1,11 +1,13 @@
 <template>
-  <div class="featured" :class="{ 'loaded': isLoaded }">
+  <div class="featured">
     <div class="featured-cards">
       <FeaturedCard 
-        v-for="featuredWork in featuredWorks" 
+        v-for="(featuredWork, index) in featuredWorks" 
         :key="featuredWork.id" 
         :featuredWork="featuredWork" 
         :isExpanded="expandedCardId === featuredWork.id"
+        :index="index"
+        :isVisible="visibleCards.includes(index)"
         @toggle="handleToggle"
       />
     </div>
@@ -25,17 +27,22 @@ export default {
     return {
       featuredWorks: [],
       expandedCardId: null,
-      isLoaded: false
+      visibleCards: []
     };
   },
   created() {
     this.loadProjects();
   },
   mounted() {
-    // Trigger fade-in animation
-    setTimeout(() => {
-      this.isLoaded = true;
-    }, 50);
+    // Add scroll listener for card animations
+    window.addEventListener('scroll', this.handleScroll);
+    
+    // Check initial visibility after DOM is fully rendered
+    this.$nextTick(() => {
+      setTimeout(() => {
+        this.handleScroll();
+      }, 100);
+    });
     
     // Remove side padding but preserve top margin for fixed header
     const contentDiv = document.getElementById('content');
@@ -57,6 +64,9 @@ export default {
     }
   },
   beforeUnmount() {
+    // Remove scroll listener
+    window.removeEventListener('scroll', this.handleScroll);
+    
     // Restore padding when leaving
     const contentDiv = document.getElementById('content');
     const roseboomDiv = document.getElementById('roseboom-recording');
@@ -76,6 +86,30 @@ export default {
     }
   },
   methods: {
+    handleScroll() {
+      const cards = document.querySelectorAll('.featured-card');
+      cards.forEach((card, index) => {
+        if (this.isElementInViewport(card) && !this.visibleCards.includes(index)) {
+          setTimeout(() => {
+            if (!this.visibleCards.includes(index)) {
+              this.visibleCards.push(index);
+            }
+          }, index * 100); // 100ms delay between each card
+        }
+      });
+    },
+    isElementInViewport(el) {
+      const rect = el.getBoundingClientRect();
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+      const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+      
+      return (
+        rect.top < windowHeight &&
+        rect.bottom > 0 &&
+        rect.left < windowWidth &&
+        rect.right > 0
+      );
+    },
     handleToggle(cardId) {
       if (this.expandedCardId === cardId) {
         this.expandedCardId = null;
@@ -108,12 +142,6 @@ export default {
   padding: 0;
   margin: 0;
   width: 100%;
-  opacity: 0;
-  transition: opacity 0.6s ease-out;
-}
-
-.featured.loaded {
-  opacity: 1;
 }
 
 .featured-cards {
