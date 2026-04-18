@@ -83,5 +83,17 @@ export default {
   },
   updateHomeContent(content) {
     return apiClient.put('/content/home', { content });
+  },
+
+  // Settings
+  exportContent() {
+    return apiClient.get('/settings/export', { responseType: 'blob' });
+  },
+  importContent(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiClient.post('/settings/import', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
   }
 };

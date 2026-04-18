@@ -34,6 +34,13 @@
       >
         Change Password
       </button>
+      <button 
+        @click="activeTab = 'settings'" 
+        :class="{ active: activeTab === 'settings' }"
+        class="tab-btn"
+      >
+        Settings
+      </button>
     </div>
 
     <div class="dashboard-content">
@@ -41,6 +48,7 @@
       <AdminProjects v-if="activeTab === 'projects'" />
       <AdminVideos v-if="activeTab === 'videos'" />
       <AdminChangePassword v-if="activeTab === 'password'" />
+      <AdminSettings v-if="activeTab === 'settings'" />
     </div>
   </div>
 </template>
@@ -50,6 +58,7 @@ import AdminHomeContent from '../components/AdminHomeContent.vue';
 import AdminProjects from '../components/AdminProjects.vue';
 import AdminVideos from '../components/AdminVideos.vue';
 import AdminChangePassword from '../components/AdminChangePassword.vue';
+import AdminSettings from '../components/AdminSettings.vue';
 
 export default {
   name: 'AdminDashboardView',
@@ -57,7 +66,8 @@ export default {
     AdminHomeContent,
     AdminProjects,
     AdminVideos,
-    AdminChangePassword
+    AdminChangePassword,
+    AdminSettings
   },
   data() {
     return {
