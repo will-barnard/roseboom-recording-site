@@ -43,7 +43,13 @@ export default {
 
 <style scoped>
 .home {
-  text-align: center; /* Center align all text */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 0 20px 20px;
 }
 
 .fade-in {
@@ -67,29 +73,20 @@ export default {
 .responsive-img {
   width: 100%;
   height: auto;
-  border-radius: 5px; /* Rounded edges */
+  border-radius: 5px;
 }
 
 .content-text {
   line-height: 1.6;
-}
-
-.bottom-images {
-  display: flex;
-  justify-content: center;
-  gap: 10px; /* Add some space between images */
-}
-
-.bottom-images img {
-  flex: 1;
-  max-width: 50%; /* Ensure images are equally sized */
-  height: auto;
-  border-radius: 5px; /* Rounded edges */
+  max-width: 700px;
 }
 
 @media (min-width: 769px) {
   .responsive-img {
-    max-width: 50vw;
+    max-width: 44vw;
+  }
+  .home {
+    padding-bottom: 40px;
   }
 }
 </style>

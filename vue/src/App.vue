@@ -1,6 +1,6 @@
 <template>
   <div id="roseboom-recording" @click="closeMenu">
-    <div id="header">
+    <div id="header" :class="{ scrolled: scrolled }">
       <div id="nav-left" class="nav-desktop">
         <p :class="{ active: $route.name === 'featured' }" @click="$router.push({ name: 'featured' })">Featured Work</p>
       </div>
@@ -43,10 +43,21 @@
 export default {
   data() {
     return {
-      menuOpen: false
+      menuOpen: false,
+      scrolled: false
     };
   },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll, { passive: true });
+    this.handleScroll();
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
   methods: {
+    handleScroll() {
+      this.scrolled = window.scrollY > 20;
+    },
     toggleMenu() {
       this.menuOpen = !this.menuOpen;
     },
@@ -67,9 +78,9 @@ body {
 }
 
 #roseboom-recording {
-  margin-top: 40px; /* Increased top margin */
-  text-align: center; /* Center align all text */
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Set site font */
+  margin-top: 0;
+  text-align: center;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   background-color: #e7e2de;
   min-height: 100vh;
 }
@@ -86,6 +97,11 @@ body {
   background-color: #e7e2de;
   z-index: 1001;
   box-sizing: border-box;
+  transition: padding 0.3s ease;
+}
+
+#header.scrolled {
+  padding: 8px 20px 12px 20px;
 }
 
 #logo-container {
@@ -103,6 +119,11 @@ body {
 #logo img {
   max-width: 120px;
   border-radius: 5px;
+  transition: max-width 0.3s ease;
+}
+
+#header.scrolled #logo img {
+  max-width: 70px;
 }
 
 #nav-left {
@@ -111,6 +132,7 @@ body {
   justify-content: flex-end;
   flex: 1;
   padding-right: 60px;
+  transition: padding 0.3s ease;
 }
 
 #nav-right {
@@ -119,6 +141,15 @@ body {
   justify-content: flex-start;
   flex: 1;
   padding-left: 60px;
+  transition: padding 0.3s ease;
+}
+
+#header.scrolled #nav-left {
+  padding-right: 30px;
+}
+
+#header.scrolled #nav-right {
+  padding-left: 30px;
 }
 
 #nav-left p,
@@ -195,15 +226,24 @@ body {
 }
 
 #content {
-  margin-top: 200px; /* Added more margin to account for fixed header with larger logo */
+  margin-top: 200px;
+  min-height: calc(100vh - 200px);
+  display: flex;
+  flex-direction: column;
 }
 
 @media (min-width: 769px) {
   #header {
-    padding-top: 80px; /* Move top area down even more on desktop */
+    padding-top: 80px;
+    transition: padding 0.3s ease;
+  }
+  #header.scrolled {
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
   #content {
-    margin-top: 240px; /* Extra margin on desktop for larger header */
+    margin-top: 240px;
+    min-height: calc(100vh - 240px);
   }
 }
 

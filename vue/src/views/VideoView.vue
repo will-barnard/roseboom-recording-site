@@ -91,6 +91,9 @@ export default {
 .video {
   text-align: center;
   padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .no-videos {

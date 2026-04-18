@@ -1,5 +1,5 @@
 <template>
-  <div class="featured-card" :class="{ 'card-visible': isVisible }" @click="handleClick" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
+  <div class="featured-card" :class="{ 'card-visible': isVisible }" :data-card-index="index" @click="handleClick" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
     <div class="image-container">
       <img :src="featuredWork.image" alt="Featured Image" />
       <div v-if="showOverlay" class="image-overlay"></div>

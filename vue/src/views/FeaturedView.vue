@@ -27,22 +27,26 @@ export default {
     return {
       featuredWorks: [],
       expandedCardId: null,
-      visibleCards: []
+      visibleCards: [],
+      observer: null
     };
   },
   created() {
     this.loadProjects();
   },
   mounted() {
-    // Add scroll listener for card animations
-    window.addEventListener('scroll', this.handleScroll);
-    
-    // Check initial visibility after DOM is fully rendered
-    this.$nextTick(() => {
-      setTimeout(() => {
-        this.handleScroll();
-      }, 100);
-    });
+    // Set up IntersectionObserver for card animations
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const index = parseInt(entry.target.dataset.cardIndex);
+          if (!isNaN(index) && !this.visibleCards.includes(index)) {
+            this.visibleCards.push(index);
+          }
+          this.observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.05 });
     
     // Remove side padding but preserve top margin for fixed header
     const contentDiv = document.getElementById('content');
@@ -52,7 +56,6 @@ export default {
       contentDiv.style.paddingLeft = '0';
       contentDiv.style.paddingRight = '0';
       contentDiv.style.paddingBottom = '0';
-      // Keep margin-top intact for fixed header
     }
     if (roseboomDiv) {
       roseboomDiv.style.paddingLeft = '0';
@@ -63,9 +66,22 @@ export default {
       body.style.padding = '0';
     }
   },
+  updated() {
+    // Observe any new card elements after data loads
+    this.$nextTick(() => {
+      const cards = this.$el.querySelectorAll('.featured-card');
+      cards.forEach((card) => {
+        if (!card.dataset.observed) {
+          card.dataset.observed = 'true';
+          this.observer.observe(card);
+        }
+      });
+    });
+  },
   beforeUnmount() {
-    // Remove scroll listener
-    window.removeEventListener('scroll', this.handleScroll);
+    if (this.observer) {
+      this.observer.disconnect();
+    }
     
     // Restore padding when leaving
     const contentDiv = document.getElementById('content');
@@ -86,30 +102,6 @@ export default {
     }
   },
   methods: {
-    handleScroll() {
-      const cards = document.querySelectorAll('.featured-card');
-      cards.forEach((card, index) => {
-        if (this.isElementInViewport(card) && !this.visibleCards.includes(index)) {
-          setTimeout(() => {
-            if (!this.visibleCards.includes(index)) {
-              this.visibleCards.push(index);
-            }
-          }, index * 100); // 100ms delay between each card
-        }
-      });
-    },
-    isElementInViewport(el) {
-      const rect = el.getBoundingClientRect();
-      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-      const windowWidth = window.innerWidth || document.documentElement.clientWidth;
-      
-      return (
-        rect.top < windowHeight &&
-        rect.bottom > 0 &&
-        rect.left < windowWidth &&
-        rect.right > 0
-      );
-    },
     handleToggle(cardId) {
       if (this.expandedCardId === cardId) {
         this.expandedCardId = null;
