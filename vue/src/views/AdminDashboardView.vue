@@ -7,13 +7,6 @@
 
     <div class="dashboard-nav">
       <button 
-        @click="activeTab = 'home'" 
-        :class="{ active: activeTab === 'home' }"
-        class="tab-btn"
-      >
-        Home Content
-      </button>
-      <button 
         @click="activeTab = 'projects'" 
         :class="{ active: activeTab === 'projects' }"
         class="tab-btn"
@@ -27,6 +20,14 @@
       >
         Manage Videos
       </button>
+      <button 
+        @click="activeTab = 'home'" 
+        :class="{ active: activeTab === 'home' }"
+        class="tab-btn"
+      >
+        Home Content
+      </button>
+      
       <button 
         @click="activeTab = 'password'" 
         :class="{ active: activeTab === 'password' }"
@@ -82,7 +83,7 @@ export default {
   },
   data() {
     return {
-      activeTab: 'home'
+      activeTab: 'projects'
     };
   },
   computed: {
