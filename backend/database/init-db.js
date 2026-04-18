@@ -38,9 +38,17 @@ const createTables = async () => {
       username TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
       email TEXT UNIQUE NOT NULL,
+      is_admin INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Add is_admin column if missing (existing databases)
+  try {
+    await run(`ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0`);
+  } catch (e) {
+    // Column already exists, ignore
+  }
 
   // Featured projects table
   await run(`
@@ -93,9 +101,12 @@ const seedData = async () => {
     const checkUser = await get('SELECT * FROM users WHERE username = ?', ['admin']);
     
     if (!checkUser) {
-      await run('INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-        ['admin', 'admin@roseboom.com', hashedPassword]);
+      await run('INSERT INTO users (username, email, password, is_admin) VALUES (?, ?, ?, ?)',
+        ['admin', 'admin@roseboom.com', hashedPassword, 1]);
       console.log('Admin user created (username: admin, password: admin123)');
+    } else if (!checkUser.is_admin) {
+      await run('UPDATE users SET is_admin = 1 WHERE username = ?', ['admin']);
+      console.log('Admin user promoted to admin');
     }
 
     // Seed initial featured projects from existing data

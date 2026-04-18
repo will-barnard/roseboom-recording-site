@@ -41,6 +41,14 @@
       >
         Settings
       </button>
+      <button 
+        v-if="isAdmin"
+        @click="activeTab = 'users'" 
+        :class="{ active: activeTab === 'users' }"
+        class="tab-btn"
+      >
+        Manage Users
+      </button>
     </div>
 
     <div class="dashboard-content">
@@ -49,6 +57,7 @@
       <AdminVideos v-if="activeTab === 'videos'" />
       <AdminChangePassword v-if="activeTab === 'password'" />
       <AdminSettings v-if="activeTab === 'settings'" />
+      <AdminUsers v-if="activeTab === 'users' && isAdmin" />
     </div>
   </div>
 </template>
@@ -59,6 +68,7 @@ import AdminProjects from '../components/AdminProjects.vue';
 import AdminVideos from '../components/AdminVideos.vue';
 import AdminChangePassword from '../components/AdminChangePassword.vue';
 import AdminSettings from '../components/AdminSettings.vue';
+import AdminUsers from '../components/AdminUsers.vue';
 
 export default {
   name: 'AdminDashboardView',
@@ -67,12 +77,18 @@ export default {
     AdminProjects,
     AdminVideos,
     AdminChangePassword,
-    AdminSettings
+    AdminSettings,
+    AdminUsers
   },
   data() {
     return {
       activeTab: 'home'
     };
+  },
+  computed: {
+    isAdmin() {
+      return !!this.$store.state.user?.is_admin;
+    }
   },
   methods: {
     logout() {

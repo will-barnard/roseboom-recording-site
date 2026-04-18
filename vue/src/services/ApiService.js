@@ -95,5 +95,19 @@ export default {
     return apiClient.post('/settings/import', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
+  },
+
+  // Users (admin only)
+  getUsers() {
+    return apiClient.get('/users');
+  },
+  createUser(userData) {
+    return apiClient.post('/users', userData);
+  },
+  resetUserPassword(id, password) {
+    return apiClient.put(`/users/${id}/reset-password`, { password });
+  },
+  deleteUser(id) {
+    return apiClient.delete(`/users/${id}`);
   }
 };

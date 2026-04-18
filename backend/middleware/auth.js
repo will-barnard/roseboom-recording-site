@@ -18,5 +18,13 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+const adminOnly = (req, res, next) => {
+  if (!req.user || !req.user.is_admin) {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+  next();
+};
+
 module.exports = authMiddleware;
 module.exports.authenticate = authMiddleware;
+module.exports.adminOnly = adminOnly;
