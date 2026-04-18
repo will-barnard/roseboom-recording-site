@@ -1,41 +1,39 @@
-version: '3.8'
-
 services:
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: roseboom-backend
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     environment:
       - NODE_ENV=production
       - PORT=3000
       - JWT_SECRET=${JWT_SECRET:-change-this-secret-key-in-production}
       - JWT_EXPIRES_IN=7d
     volumes:
-      - ./data:/app/data
-      - ./backend/uploads:/app/uploads
-      - ./backend/.env:/app/.env
+      - roseboom-data:/app/data
+      - roseboom-uploads:/app/uploads
     restart: unless-stopped
     networks:
-      - roseboom-network
+      - internal
 
   frontend:
     build:
       context: ./vue
       dockerfile: Dockerfile
-    container_name: roseboom-frontend
-    ports:
-      - "5173:5173"
-    environment:
-      - VITE_API_URL=/api
+    expose:
+      - "80"
     depends_on:
       - backend
     restart: unless-stopped
     networks:
-      - roseboom-network
+      - internal
+
+volumes:
+  roseboom-data:
+    name: roseboom-data
+  roseboom-uploads:
+    name: roseboom-uploads
 
 networks:
-  roseboom-network:
-    driver: bridge
+  internal:
