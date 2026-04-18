@@ -55,6 +55,45 @@ router.post('/', async (req, res) => {
   }
 });
 
+// PUT /api/users/:id - Update username and/or email
+router.put('/:id', async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    const { username, email } = req.body;
+
+    if (!username && !email) {
+      return res.status(400).json({ error: 'At least one of username or email is required' });
+    }
+
+    const user = await dbGet('SELECT * FROM users WHERE id = ?', [userId]);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const newUsername = username || user.username;
+    const newEmail = email || user.email;
+
+    // Check uniqueness against other users
+    const conflict = await dbGet(
+      'SELECT * FROM users WHERE (username = ? OR email = ?) AND id != ?',
+      [newUsername, newEmail, userId]
+    );
+    if (conflict) {
+      return res.status(400).json({ error: 'Username or email already in use by another account' });
+    }
+
+    await dbRun(
+      'UPDATE users SET username = ?, email = ? WHERE id = ?',
+      [newUsername, newEmail, userId]
+    );
+
+    res.json({ id: userId, username: newUsername, email: newEmail, is_admin: user.is_admin });
+  } catch (error) {
+    console.error('Update user error:', error);
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
 // PUT /api/users/:id/reset-password - Reset a user's password
 router.put('/:id/reset-password', async (req, res) => {
   try {

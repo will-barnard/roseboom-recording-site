@@ -104,6 +104,9 @@ export default {
   createUser(userData) {
     return apiClient.post('/users', userData);
   },
+  updateUser(id, userData) {
+    return apiClient.put(`/users/${id}`, userData);
+  },
   resetUserPassword(id, password) {
     return apiClient.put(`/users/${id}/reset-password`, { password });
   },

@@ -46,8 +46,20 @@
         </thead>
         <tbody>
           <tr v-for="user in users" :key="user.id">
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
+            <!-- Username cell -->
+            <td>
+              <template v-if="editingId === user.id">
+                <input v-model="editFields.username" class="edit-input" />
+              </template>
+              <template v-else>{{ user.username }}</template>
+            </td>
+            <!-- Email cell -->
+            <td>
+              <template v-if="editingId === user.id">
+                <input v-model="editFields.email" type="email" class="edit-input" />
+              </template>
+              <template v-else>{{ user.email }}</template>
+            </td>
             <td>
               <span class="badge" :class="user.is_admin ? 'badge-admin' : 'badge-user'">
                 {{ user.is_admin ? 'Admin' : 'User' }}
@@ -55,6 +67,13 @@
             </td>
             <td>{{ formatDate(user.created_at) }}</td>
             <td class="actions-cell">
+              <!-- Edit / Save / Cancel -->
+              <template v-if="editingId === user.id">
+                <button @click="saveEdit(user)" class="btn-save">Save</button>
+                <button @click="cancelEdit" class="btn-cancel">Cancel</button>
+              </template>
+              <button v-else @click="startEdit(user)" class="btn-edit">Edit</button>
+
               <div class="reset-password-inline">
                 <input
                   v-model="resetPasswords[user.id]"
@@ -105,7 +124,9 @@ export default {
         email: '',
         password: ''
       },
-      resetPasswords: {}
+      resetPasswords: {},
+      editingId: null,
+      editFields: { username: '', email: '' }
     };
   },
   computed: {
@@ -165,6 +186,34 @@ export default {
         await this.fetchUsers();
       } catch (error) {
         const msg = error.response?.data?.error || 'Failed to delete user';
+        this.showMessage(msg, 'error');
+      }
+    },
+    startEdit(user) {
+      this.editingId = user.id;
+      this.editFields = { username: user.username, email: user.email };
+    },
+    cancelEdit() {
+      this.editingId = null;
+      this.editFields = { username: '', email: '' };
+    },
+    async saveEdit(user) {
+      const { username, email } = this.editFields;
+      if (!username || !email) {
+        this.showMessage('Username and email cannot be empty', 'error');
+        return;
+      }
+      try {
+        const response = await ApiService.updateUser(user.id, { username, email });
+        this.showMessage(`User updated`, 'success');
+        // Update local list
+        const idx = this.users.findIndex(u => u.id === user.id);
+        if (idx !== -1) {
+          this.users[idx] = { ...this.users[idx], ...response.data };
+        }
+        this.cancelEdit();
+      } catch (error) {
+        const msg = error.response?.data?.error || 'Failed to update user';
         this.showMessage(msg, 'error');
       }
     },
@@ -371,6 +420,56 @@ th {
   font-size: 13px;
   color: #999;
   font-style: italic;
+}
+
+.btn-edit {
+  padding: 4px 12px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-edit:hover {
+  background: #5a6268;
+}
+
+.btn-save {
+  padding: 4px 12px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-save:hover {
+  background: #218838;
+}
+
+.btn-cancel {
+  padding: 4px 12px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-cancel:hover {
+  background: #5a6268;
+}
+
+.edit-input {
+  padding: 4px 8px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  font-size: 13px;
+  width: 140px;
 }
 
 .loading {
