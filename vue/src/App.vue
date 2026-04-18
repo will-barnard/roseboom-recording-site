@@ -1,15 +1,15 @@
 <template>
   <div id="roseboom-recording" @click="closeMenu">
-    <div id="header" :class="{ scrolled: scrolled }">
-      <div id="nav-left" class="nav-desktop">
+    <div id="header" :style="headerStyle">
+      <div id="nav-left" class="nav-desktop" :style="navLeftStyle">
         <p :class="{ active: $route.name === 'featured' }" @click="$router.push({ name: 'featured' })">Featured Work</p>
       </div>
       <div id="logo-container">
         <div id="logo" @click="$router.push({ name: 'home' })">
-          <img src="/img/logo.png" alt="Logo" />
+          <img src="/img/logo.png" alt="Logo" :style="logoStyle" />
         </div>
       </div>
-      <div id="nav-right" class="nav-desktop">
+      <div id="nav-right" class="nav-desktop" :style="navRightStyle">
         <p :class="{ active: $route.name === 'video' }" @click="$router.push({ name: 'video' })">Video</p>
         <div class="spacer"></div>
         <p :class="{ active: $route.name === 'contact' }" @click="$router.push({ name: 'contact' })">Contact</p>
@@ -44,19 +44,53 @@ export default {
   data() {
     return {
       menuOpen: false,
-      scrolled: false
+      scrollProgress: 0,
+      isMobile: false
     };
+  },
+  computed: {
+    headerStyle() {
+      if (this.isMobile) return {};
+      const t = this.scrollProgress;
+      const padTop = 80 - 70 * t;
+      const padBot = 40 - 28 * t;
+      return {
+        paddingTop: padTop + 'px',
+        paddingBottom: padBot + 'px'
+      };
+    },
+    logoStyle() {
+      if (this.isMobile) return {};
+      const size = 120 - 50 * this.scrollProgress;
+      return { maxWidth: size + 'px' };
+    },
+    navLeftStyle() {
+      if (this.isMobile) return {};
+      const pad = 60 - 30 * this.scrollProgress;
+      return { paddingRight: pad + 'px' };
+    },
+    navRightStyle() {
+      if (this.isMobile) return {};
+      const pad = 60 - 30 * this.scrollProgress;
+      return { paddingLeft: pad + 'px' };
+    }
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll, { passive: true });
+    window.addEventListener('resize', this.checkMobile);
+    this.checkMobile();
     this.handleScroll();
   },
   beforeUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('resize', this.checkMobile);
   },
   methods: {
     handleScroll() {
-      this.scrolled = window.scrollY > 20;
+      this.scrollProgress = Math.min(window.scrollY / 150, 1);
+    },
+    checkMobile() {
+      this.isMobile = window.innerWidth <= 768;
     },
     toggleMenu() {
       this.menuOpen = !this.menuOpen;
@@ -97,11 +131,6 @@ body {
   background-color: #e7e2de;
   z-index: 1001;
   box-sizing: border-box;
-  transition: padding 0.3s ease;
-}
-
-#header.scrolled {
-  padding: 8px 20px 12px 20px;
 }
 
 #logo-container {
@@ -119,11 +148,6 @@ body {
 #logo img {
   max-width: 120px;
   border-radius: 5px;
-  transition: max-width 0.3s ease;
-}
-
-#header.scrolled #logo img {
-  max-width: 70px;
 }
 
 #nav-left {
@@ -132,7 +156,6 @@ body {
   justify-content: flex-end;
   flex: 1;
   padding-right: 60px;
-  transition: padding 0.3s ease;
 }
 
 #nav-right {
@@ -141,15 +164,6 @@ body {
   justify-content: flex-start;
   flex: 1;
   padding-left: 60px;
-  transition: padding 0.3s ease;
-}
-
-#header.scrolled #nav-left {
-  padding-right: 30px;
-}
-
-#header.scrolled #nav-right {
-  padding-left: 30px;
 }
 
 #nav-left p,
@@ -233,14 +247,6 @@ body {
 }
 
 @media (min-width: 769px) {
-  #header {
-    padding-top: 80px;
-    transition: padding 0.3s ease;
-  }
-  #header.scrolled {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
   #content {
     margin-top: 240px;
     min-height: calc(100vh - 240px);

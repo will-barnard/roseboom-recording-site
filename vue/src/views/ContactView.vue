@@ -50,7 +50,7 @@ export default {
 .contact-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 2rem 3rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -76,6 +76,8 @@ export default {
   width: 100%;
   height: auto;
   display: block;
+  max-height: calc(100vh - 340px);
+  object-fit: contain;
 }
 
 .contact-info {

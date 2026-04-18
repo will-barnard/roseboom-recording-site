@@ -74,6 +74,8 @@ export default {
   width: 100%;
   height: auto;
   border-radius: 5px;
+  max-height: calc(100vh - 340px);
+  object-fit: contain;
 }
 
 .content-text {
@@ -84,6 +86,7 @@ export default {
 @media (min-width: 769px) {
   .responsive-img {
     max-width: 44vw;
+    max-height: calc(100vh - 360px);
   }
   .home {
     padding-bottom: 40px;
