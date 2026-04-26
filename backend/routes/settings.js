@@ -11,7 +11,7 @@ const authMiddleware = require('../middleware/auth');
 // Configure multer for zip upload (temp storage)
 const upload = multer({
   dest: path.join(__dirname, '../data/tmp'),
-  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB limit
+  limits: { fileSize: 500 * 1024 * 1024 }, // 500MB limit
   fileFilter: (req, file, cb) => {
     if (file.mimetype === 'application/zip' || file.originalname.endsWith('.zip')) {
       cb(null, true);
