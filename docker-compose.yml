@@ -9,7 +9,7 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - JWT_SECRET=${JWT_SECRET:-change-this-secret-key-in-production}
-      - JWT_EXPIRES_IN=7d
+      - JWT_EXPIRES_IN=2y
     volumes:
       - roseboom-data:/app/data
       - roseboom-uploads:/app/uploads
